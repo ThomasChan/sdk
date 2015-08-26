@@ -26,7 +26,7 @@
     "bluebird": "^2.9.34",
     "debug": "1.0.2",
     "lodash": "~2.4.1",
-    "request": "2.37.0",
+    "request": "^2.37.0",
     "swig": "1.4.1"
   },
   "devDependencies": {
