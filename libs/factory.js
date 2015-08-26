@@ -34,7 +34,7 @@ function initRequest(opts, params, middleware) {
   var options = isObject(params) ? params : {}
 
   if (rules) {
-    if (rules.all) 
+    if (rules.all)
       options = _.merge(_.cloneDeep(rules.all), options)
     if (rules[opts.method])
       options = _.merge(_.cloneDeep(rules[opts.method]), options)
@@ -48,7 +48,7 @@ function initRequest(opts, params, middleware) {
   }
 
   options.method = opts.method
-  options.url = isAbsUri(opts.url) ? 
+  options.url = isAbsUri(opts.url) ?
     opts.url : url.resolve(opts.host, opts.url);
 
   if (options.json == undefined)
@@ -58,16 +58,20 @@ function initRequest(opts, params, middleware) {
 
   return new Promise((Resolve, Reject) => {
     return request(options, (err, response, body) => {
-      if (err)
-        return Reject(err)
+      // if (err)
+      //   return Reject(err)
 
       debug('sdk:response:status')(response.statusCode)
       debug('sdk:response:headers')(response.headers)
       debug('sdk:response:body')(body)
 
+      // need refactory
       var code = response.statusCode
-      if (code >= 400) 
+      if (code >= 400 && code < 500) {
+        return Reject(response)
+      } else if (code >= 500) {
         return Reject(new Error(code))
+      }
 
       if (_.isFunction(middleware)) {
         return middleware(response, body, (customError, customBody) => {
