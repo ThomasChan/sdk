@@ -94,7 +94,7 @@ function initRequest(opts, params, middleware) {
     if (options.qs) req.query(options.qs);
     if (options.body) req.send(options.body);
 
-    req.end(function (err, res) {
+    return req.end(function (err, res) {
       // We need the whole response
       if (err) return Reject(res);
 
