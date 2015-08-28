@@ -24,9 +24,9 @@ var _bluebird = require('bluebird');
 
 var _bluebird2 = _interopRequireDefault(_bluebird);
 
-var _request = require('request');
+var _superagent = require('superagent');
 
-var _request2 = _interopRequireDefault(_request);
+var _superagent2 = _interopRequireDefault(_superagent);
 
 var _url3 = require('./url');
 
@@ -87,29 +87,37 @@ function initRequest(opts, params, middleware) {
   (0, _debug2['default'])('sdk:request')(options);
 
   return new _bluebird2['default'](function (Resolve, Reject) {
-    return (0, _request2['default'])(options, function (err, response, body) {
-      // if (err)
-      //   return Reject(err)
+    var req = _superagent2['default'][options.method](options.url);
 
-      (0, _debug2['default'])('sdk:response:status')(response.statusCode);
-      (0, _debug2['default'])('sdk:response:headers')(response.headers);
-      (0, _debug2['default'])('sdk:response:body')(body);
+    if (options.headers) req.set(options.headers);
+    if (options.json) req.accept('json').type('json');
+    if (options.qs) req.query(options.qs);
+    if (options.body) req.send(options.body);
 
-      // need refactory
-      var code = response.statusCode;
+    req.end(function (err, res) {
+      if (err) return Reject(err);
+
+      (0, _debug2['default'])('sdk:response:status')(res.status);
+      (0, _debug2['default'])('sdk:response:headers')(res.header);
+      (0, _debug2['default'])('sdk:response:body')(res.body);
+
+      var code = res.status;
+      var body = res.body || res.text;
       if (code >= 400 && code < 500) {
-        return Reject(response);
-      } else if (code >= 500) {
+        return Reject(res);
+      }
+
+      if (code > 500) {
         return Reject(new Error(code));
       }
 
       if (_lodash2['default'].isFunction(middleware)) {
-        return middleware(response, body, function (customError, customBody) {
+        return middleware(res, body, function (customError, customBody) {
           if (customError) return Reject(customError);
 
           return Resolve({
             code: code,
-            response: response,
+            response: res,
             body: customBody || body
           });
         });
@@ -117,7 +125,7 @@ function initRequest(opts, params, middleware) {
 
       return Resolve({
         code: code,
-        response: response,
+        response: res,
         body: body
       });
     });

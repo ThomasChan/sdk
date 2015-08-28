@@ -2,7 +2,7 @@ import url from 'url'
 import _ from 'lodash'
 import debug from 'debug'
 import Promise from 'bluebird'
-import request from 'request'
+import request from 'superagent'
 import urlmaker from './url'
 
 export function lowLevel(host, method, rules) {
@@ -57,30 +57,43 @@ function initRequest(opts, params, middleware) {
   debug('sdk:request')(options)
 
   return new Promise((Resolve, Reject) => {
-    return request(options, (err, response, body) => {
-      // if (err)
-      //   return Reject(err)
+    let req = request[options.method](options.url)
 
-      debug('sdk:response:status')(response.statusCode)
-      debug('sdk:response:headers')(response.headers)
-      debug('sdk:response:body')(body)
+    if (options.headers)
+      req.set(options.headers)
+    if (options.json)
+      req.accept('json').type('json')
+    if (options.qs)
+      req.query(options.qs)
+    if (options.body)
+      req.send(options.body)
 
-      // need refactory
-      var code = response.statusCode
+    req.end((err, res) => {
+      if (err)
+        return Reject(err)
+
+      debug('sdk:response:status')(res.status)
+      debug('sdk:response:headers')(res.header)
+      debug('sdk:response:body')(res.body)
+
+      let code = res.status;
+      let body = res.body || res.text;
       if (code >= 400 && code < 500) {
-        return Reject(response)
-      } else if (code >= 500) {
+        return Reject(res)
+      }
+
+      if (code > 500) {
         return Reject(new Error(code))
       }
 
       if (_.isFunction(middleware)) {
-        return middleware(response, body, (customError, customBody) => {
+        return middleware(res, body, (customError, customBody) => {
           if (customError)
             return Reject(customError)
 
           return Resolve({
             code,
-            response,
+            response: res,
             body: customBody || body
           })
         })
@@ -88,7 +101,7 @@ function initRequest(opts, params, middleware) {
 
       return Resolve({
         code,
-        response,
+        response: res,
         body
       })
     })
