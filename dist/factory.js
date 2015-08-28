@@ -95,7 +95,8 @@ function initRequest(opts, params, middleware) {
     if (options.body) req.send(options.body);
 
     req.end(function (err, res) {
-      if (err) return Reject(err);
+      // We need the whole response
+      if (err) return Reject(res);
 
       (0, _debug2['default'])('sdk:response:status')(res.status);
       (0, _debug2['default'])('sdk:response:headers')(res.header);
@@ -103,13 +104,6 @@ function initRequest(opts, params, middleware) {
 
       var code = res.status;
       var body = res.body || res.text;
-      if (code >= 400 && code < 500) {
-        return Reject(res);
-      }
-
-      if (code > 500) {
-        return Reject(new Error(code));
-      }
 
       if (_lodash2['default'].isFunction(middleware)) {
         return middleware(res, body, function (customError, customBody) {

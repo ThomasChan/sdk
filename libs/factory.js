@@ -69,8 +69,9 @@ function initRequest(opts, params, middleware) {
       req.send(options.body)
 
     req.end((err, res) => {
+      // We need the whole response
       if (err)
-        return Reject(err)
+        return Reject(res)
 
       debug('sdk:response:status')(res.status)
       debug('sdk:response:headers')(res.header)
@@ -78,13 +79,6 @@ function initRequest(opts, params, middleware) {
 
       let code = res.status;
       let body = res.body || res.text;
-      if (code >= 400 && code < 500) {
-        return Reject(res)
-      }
-
-      if (code > 500) {
-        return Reject(new Error(code))
-      }
 
       if (_.isFunction(middleware)) {
         return middleware(res, body, (customError, customBody) => {
