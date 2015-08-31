@@ -33,6 +33,12 @@ describe('SDK', () => {
         result.should.have.property('code')
         result.should.have.property('body')
         done()
+      }).catch(res => {
+        // If you don't catch this, it'll throw an error
+        // `Unhandled rejection error` that's sucks.
+        res.should.have.property('error')
+        res.should.have.property('status')
+        done()
       })
     })
   })
