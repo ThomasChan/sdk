@@ -1,7 +1,5 @@
-import swig from 'swig'
+import _ from 'lodash';
 
 export default (route, locals) => {
-  return swig.render(route, {
-    locals
-  })
+  return _.template(route)(locals)
 }
