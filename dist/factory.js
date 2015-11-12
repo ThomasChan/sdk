@@ -1,12 +1,10 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.lowLevel = lowLevel;
 exports.highLevel = highLevel;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _url = require('url');
 
@@ -31,6 +29,8 @@ var _superagent2 = _interopRequireDefault(_superagent);
 var _url3 = require('./url');
 
 var _url4 = _interopRequireDefault(_url3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function lowLevel(host, method, rules) {
   return function (url) {
@@ -58,7 +58,7 @@ function highLevel(host, _ref, rules) {
     return initRequest({
       host: host,
       rules: rules,
-      url: (0, _url4['default'])(url, params),
+      url: (0, _url4.default)(url, params),
       method: method ? method.toLowerCase() : 'get'
     }, params, callback);
   };
@@ -69,8 +69,8 @@ function initRequest(opts, params, middleware) {
   var options = isObject(params) ? params : {};
 
   if (rules) {
-    if (rules.all) options = _lodash2['default'].merge(_lodash2['default'].cloneDeep(rules.all), options);
-    if (rules[opts.method]) options = _lodash2['default'].merge(_lodash2['default'].cloneDeep(rules[opts.method]), options);
+    if (rules.all) options = _lodash2.default.merge(_lodash2.default.cloneDeep(rules.all), options);
+    if (rules[opts.method]) options = _lodash2.default.merge(_lodash2.default.cloneDeep(rules[opts.method]), options);
 
     if (options.headers) {
       Object.keys(options.headers).forEach(function (k) {
@@ -80,14 +80,14 @@ function initRequest(opts, params, middleware) {
   }
 
   options.method = opts.method;
-  options.url = isAbsUri(opts.url) ? opts.url : _url2['default'].resolve(opts.host, opts.url);
+  options.url = isAbsUri(opts.url) ? opts.url : _url2.default.resolve(opts.host, opts.url);
 
   if (options.json == undefined) options.json = true;
 
-  (0, _debug2['default'])('sdk:request')(options);
+  (0, _debug2.default)('sdk:request')(options);
 
-  return new _bluebird2['default'](function (Resolve, Reject) {
-    var req = _superagent2['default'][options.method](options.url);
+  return new _bluebird2.default(function (Resolve, Reject) {
+    var req = _superagent2.default[options.method](options.url);
 
     if (options.headers) req.set(options.headers);
     if (options.json) req.accept('json').type('json');
@@ -98,14 +98,14 @@ function initRequest(opts, params, middleware) {
       // We need the whole response
       if (err) return Reject(res);
 
-      (0, _debug2['default'])('sdk:response:status')(res.status);
-      (0, _debug2['default'])('sdk:response:headers')(res.header);
-      (0, _debug2['default'])('sdk:response:body')(res.body);
+      (0, _debug2.default)('sdk:response:status')(res.status);
+      (0, _debug2.default)('sdk:response:headers')(res.header);
+      (0, _debug2.default)('sdk:response:body')(res.body);
 
       var code = res.status;
       var body = res.body || res.text;
 
-      if (_lodash2['default'].isFunction(middleware)) {
+      if (_lodash2.default.isFunction(middleware)) {
         return middleware(res, body, function (customError, customBody) {
           if (customError) return Reject(customError);
 
@@ -129,7 +129,7 @@ function initRequest(opts, params, middleware) {
 }
 
 function isObject(obj) {
-  return obj && _lodash2['default'].isObject(obj) && !_lodash2['default'].isFunction(obj);
+  return obj && _lodash2.default.isObject(obj) && !_lodash2.default.isFunction(obj);
 }
 
 function isAbsUri(uri) {

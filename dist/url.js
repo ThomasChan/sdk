@@ -1,20 +1,16 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var _lodash = require('lodash');
 
-var _swig = require('swig');
+var _lodash2 = _interopRequireDefault(_lodash);
 
-var _swig2 = _interopRequireDefault(_swig);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports['default'] = function (route, locals) {
-  return _swig2['default'].render(route, {
-    locals: locals
-  });
+exports.default = function (route, locals) {
+  return _lodash2.default.template(route)(locals);
 };
-
-module.exports = exports['default'];
 //# sourceMappingURL=url.js.map
