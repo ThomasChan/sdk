@@ -26,6 +26,10 @@ var _superagent = require('superagent');
 
 var _superagent2 = _interopRequireDefault(_superagent);
 
+var _superagentProxy = require('superagent-proxy');
+
+var _superagentProxy2 = _interopRequireDefault(_superagentProxy);
+
 var _url3 = require('./url');
 
 var _url4 = _interopRequireDefault(_url3);
@@ -87,7 +91,14 @@ function initRequest(opts, params, middleware) {
   (0, _debug2.default)('sdk:request')(options);
 
   return new _bluebird2.default(function (Resolve, Reject) {
-    var req = _superagent2.default[options.method](options.url);
+    var req = undefined;
+    if (options.proxy) {
+      (0, _superagentProxy2.default)(_superagent2.default);
+      req = _superagent2.default[options.method](options.url);
+      req.proxy(options.proxy);
+    } else {
+      req = _superagent2.default[options.method](options.url);
+    }
 
     if (options.headers) req.set(options.headers);
     if (options.json) req.accept('json').type('json');

@@ -3,6 +3,7 @@ import _ from 'lodash'
 import debug from 'debug'
 import Promise from 'bluebird'
 import request from 'superagent'
+import proxy from 'superagent-proxy'
 import urlmaker from './url'
 
 export function lowLevel(host, method, rules) {
@@ -57,7 +58,14 @@ function initRequest(opts, params, middleware) {
   debug('sdk:request')(options)
 
   return new Promise((Resolve, Reject) => {
-    let req = request[options.method](options.url)
+    let req;
+    if (options.proxy) {
+      proxy(request);
+      req = request[options.method](options.url)
+      req.proxy(options.proxy);
+    } else {
+      req = request[options.method](options.url)
+    }
 
     if (options.headers)
       req.set(options.headers)
