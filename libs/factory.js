@@ -69,7 +69,6 @@ function initRequest(opts, params, middleware) {
       req.send(options.body)
 
     req.end((err, res) => {
-      // We need the whole response
       if (err)
         return Reject(res)
 
