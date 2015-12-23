@@ -3,8 +3,8 @@ import _ from 'lodash'
 import debug from 'debug'
 import Promise from 'bluebird'
 import request from 'superagent'
-import proxy from 'superagent-proxy'
 import urlmaker from './url'
+import fetch from 'isomorphic-fetch'
 
 export function lowLevel(host, method, rules) {
   return (url, params={}) => {
@@ -30,7 +30,7 @@ export function highLevel(host, { url, method, callback }, rules) {
   }
 }
 
-function initRequest(opts, params, middleware) {
+async function initRequest(opts, params, middleware) {
   var rules = opts.rules
   var options = isObject(params) ? params : {}
 
@@ -55,61 +55,77 @@ function initRequest(opts, params, middleware) {
   if (options.json == undefined)
     options.json = true
 
-  debug('sdk:request')(options)
-
-  return new Promise((Resolve, Reject) => {
-    let req;
-    if (options.proxy) {
-      proxy(request);
-      req = request[options.method](options.url)
-      req.proxy(options.proxy);
-    } else {
-      req = request[options.method](options.url)
+  if (options.json)
+    options.headers = {
+      ...options.headers,
+      'Content-Type': 'application/json'
     }
 
-    if (options.headers)
-      req.set(options.headers)
-    if (options.json)
-      req.accept('json').type('json')
-    if (options.qs)
-      req.query(options.qs)
-    if (options.body)
-      req.send(options.body)
+  debug('sdk:request')(options)
 
-    req.end((err, res) => {
-      // We need the whole response
-      if (err)
-        return Reject(res)
+  const search = Object.keys(options.qs).map(key => {
+    return key + '=' + obj[key];
+  }).join('&');
 
-      debug('sdk:response:status')(res.status)
-      debug('sdk:response:headers')(res.header)
-      debug('sdk:response:body')(res.body)
+  try {
+    let response = await fetch(`${options.url}${search}`, {
+      method: options.method,
+      headers: options.headers,
+      body: options.body
+    });
 
-      let code = res.status;
-      let body = res.body || res.text;
+    if (response.status === 200) return response.json()
+    throw response;
+  } catch (error) {
+    throw error;
+  }
 
-      if (_.isFunction(middleware)) {
-        return middleware(res, body, (customError, customBody) => {
-          if (customError)
-            return Reject(customError)
+  // return new Promise((Resolve, Reject) => {
+  //   let req = request[options.method](options.url);
 
-          return Resolve({
-            code,
-            response: res,
-            body: customBody || body
-          })
-        })
-      }
+  //   if (options.headers)
+  //     req.set(options.headers)
+  //   if (options.json)
+  //     req.accept('json').type('json')
+  //   if (options.qs)
+  //     req.query(options.qs)
+  //   if (options.body)
+  //     req.send(options.body)
 
-      return Resolve({
-        code,
-        response: res,
-        body
-      })
-    })
+  //   req.end((err, res) => {
+  //     // We need the whole response
+  //     if (err)
+  //       return Reject(res)
 
-    return req
-  })
+  //     debug('sdk:response:status')(res.status)
+  //     debug('sdk:response:headers')(res.header)
+  //     debug('sdk:response:body')(res.body)
+
+  //     let code = res.status;
+  //     let body = res.body || res.text;
+
+  //     if (_.isFunction(middleware)) {
+  //       return middleware(res, body, (customError, customBody) => {
+  //         if (customError)
+  //           return Reject(customError)
+
+  //         return Resolve({
+  //           code,
+  //           response: res,
+  //           body: customBody || body
+  //         })
+  //       })
+  //     }
+
+  //     return Resolve({
+  //       code,
+  //       response: res,
+  //       body
+  //     })
+  //   })
+
+  //   return req
+  // })
 }
 
 function isObject(obj) {
