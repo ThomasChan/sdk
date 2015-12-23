@@ -1,17 +1,20 @@
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })(); //              ____
-//    _________/ / /__
-//   / ___/ __  / //_/
-//  (__  ) /_/ / ,<
-// /____/\__,_/_/|_|
-//
-// @brief: a sdk factory, build sdks made easy
-// @author: [turingou](http://guoyu.me)
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
 
 var _lodash = require('lodash');
 
@@ -21,8 +24,6 @@ var _factory = require('./factory');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 /**
  *
  * @host[String]: the host domain
@@ -30,11 +31,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @rules[Object]: a object contains rules which append or merged into query params.
  *
  **/
+//              ____
+//    _________/ / /__
+//   / ___/ __  / //_/
+//  (__  ) /_/ / ,<
+// /____/\__,_/_/|_|
+//
+// @brief: a sdk factory, build sdks made easy
+// @author: [turingou](http://guoyu.me)
 
 var SDK = (function () {
   function SDK(host, routes) {
-    _classCallCheck(this, SDK);
-
+    (0, _classCallCheck3.default)(this, SDK);
     var rules = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
 
     if (!routes || !host) return;
@@ -56,7 +64,7 @@ var SDK = (function () {
    *
    **/
 
-  _createClass(SDK, [{
+  (0, _createClass3.default)(SDK, [{
     key: 'rule',
     value: function rule(key, value) {
       if (!key || !value) return false;
@@ -89,7 +97,7 @@ var SDK = (function () {
       });
 
       // init custom apis
-      Object.keys(routes).forEach(function (key) {
+      (0, _keys2.default)(routes).forEach(function (key) {
         var route = routes[key];
         var api = {
           url: typeof route === 'string' ? route : route.url
@@ -103,7 +111,6 @@ var SDK = (function () {
       return this;
     }
   }]);
-
   return SDK;
 })();
 

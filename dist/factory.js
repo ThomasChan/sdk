@@ -1,12 +1,26 @@
 'use strict';
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.lowLevel = lowLevel;
 exports.highLevel = highLevel;
+
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
 var _url = require('url');
 
@@ -37,8 +51,6 @@ var _isomorphicFetch = require('isomorphic-fetch');
 var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new _bluebird2.default(function (resolve, reject) { var callNext = step.bind(null, "next"); var callThrow = step.bind(null, "throw"); function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { _bluebird2.default.resolve(value).then(callNext, callThrow); } } callNext(); }); }; }
 
 function lowLevel(host, method, rules) {
   return function (url) {
@@ -73,9 +85,9 @@ function highLevel(host, _ref, rules) {
 }
 
 var initRequest = (function () {
-  var ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(opts, params, middleware) {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(opts, params, middleware) {
     var rules, options, search, response;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
+    return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
           rules = opts.rules;
@@ -86,7 +98,7 @@ var initRequest = (function () {
             if (rules[opts.method]) options = _lodash2.default.merge(_lodash2.default.cloneDeep(rules[opts.method]), options);
 
             if (options.headers) {
-              Object.keys(options.headers).forEach(function (k) {
+              (0, _keys2.default)(options.headers).forEach(function (k) {
                 if (typeof options.headers[k] === 'function') options.headers[k] = options.headers[k]();
               });
             }
@@ -97,13 +109,13 @@ var initRequest = (function () {
 
           if (options.json == undefined) options.json = true;
 
-          if (options.json) options.headers = _extends({}, options.headers, {
+          if (options.json) options.headers = (0, _extends3.default)({}, options.headers, {
             'Content-Type': 'application/json'
           });
 
           (0, _debug2.default)('sdk:request')(options);
 
-          search = Object.keys(options.qs).map(function (key) {
+          search = (0, _keys2.default)(options.qs).map(function (key) {
             return key + '=' + obj[key];
           }).join('&');
           _context.prev = 9;
@@ -138,7 +150,6 @@ var initRequest = (function () {
       }
     }, _callee, this, [[9, 18]]);
   }));
-
   return function initRequest(_x3, _x4, _x5) {
     return ref.apply(this, arguments);
   };
