@@ -1,6 +1,10 @@
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })(); //              ____
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); //              ____
 //    _________/ / /__
 //   / ___/ __  / //_/
 //  (__  ) /_/ / ,<
@@ -9,11 +13,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
 // @brief: a sdk factory, build sdks made easy
 // @author: [turingou](http://guoyu.me)
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _lodash = require('lodash');
+var _lodash = require('lodash.isobject');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
@@ -30,15 +30,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @rules[Object]: a object contains rules which append or merged into query params.
  *
  **/
-
-var SDK = (function () {
+var SDK = function () {
   function SDK(host, routes) {
+    var rules = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
     _classCallCheck(this, SDK);
 
-    var rules = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
-
     if (!routes || !host) return;
-    if (!_lodash2.default.isObject(routes)) return;
+    if (!(0, _lodash2.default)(routes)) return;
 
     this.host = host;
     this.routes = routes;
@@ -55,6 +54,7 @@ var SDK = (function () {
    * for instance, `qs` object will be merged into query string. and `form` object will be merged into post form.
    *
    **/
+
 
   _createClass(SDK, [{
     key: 'rule',
@@ -105,7 +105,7 @@ var SDK = (function () {
   }]);
 
   return SDK;
-})();
+}();
 
 exports.default = SDK;
 //# sourceMappingURL=sdk.js.map

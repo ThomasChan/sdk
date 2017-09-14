@@ -10,9 +10,21 @@ var _url = require('url');
 
 var _url2 = _interopRequireDefault(_url);
 
-var _lodash = require('lodash');
+var _lodash = require('lodash.merge');
 
 var _lodash2 = _interopRequireDefault(_lodash);
+
+var _lodash3 = require('lodash.clonedeep');
+
+var _lodash4 = _interopRequireDefault(_lodash3);
+
+var _lodash5 = require('lodash.isfunction');
+
+var _lodash6 = _interopRequireDefault(_lodash5);
+
+var _lodash7 = require('lodash.isobject');
+
+var _lodash8 = _interopRequireDefault(_lodash7);
 
 var _debug = require('debug');
 
@@ -34,7 +46,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function lowLevel(host, method, rules) {
   return function (url) {
-    var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+    var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
     // Return a Promise/A+
     return initRequest({
@@ -47,12 +59,12 @@ function lowLevel(host, method, rules) {
 }
 
 function highLevel(host, _ref, rules) {
-  var url = _ref.url;
-  var method = _ref.method;
-  var callback = _ref.callback;
+  var url = _ref.url,
+      method = _ref.method,
+      callback = _ref.callback;
 
   return function () {
-    var params = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+    var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     // Return a Promise/A+
     return initRequest({
@@ -69,8 +81,8 @@ function initRequest(opts, params, middleware) {
   var options = isObject(params) ? params : {};
 
   if (rules) {
-    if (rules.all) options = _lodash2.default.merge(_lodash2.default.cloneDeep(rules.all), options);
-    if (rules[opts.method]) options = _lodash2.default.merge(_lodash2.default.cloneDeep(rules[opts.method]), options);
+    if (rules.all) options = (0, _lodash2.default)((0, _lodash4.default)(rules.all), options);
+    if (rules[opts.method]) options = (0, _lodash2.default)((0, _lodash4.default)(rules[opts.method]), options);
 
     if (options.headers) {
       Object.keys(options.headers).forEach(function (k) {
@@ -95,7 +107,6 @@ function initRequest(opts, params, middleware) {
     if (options.body) req.send(options.body);
 
     req.end(function (err, res) {
-      // We need the whole response
       if (err) return Reject(res);
 
       (0, _debug2.default)('sdk:response:status')(res.status);
@@ -105,7 +116,7 @@ function initRequest(opts, params, middleware) {
       var code = res.status;
       var body = res.body || res.text;
 
-      if (_lodash2.default.isFunction(middleware)) {
+      if ((0, _lodash6.default)(middleware)) {
         return middleware(res, body, function (customError, customBody) {
           if (customError) return Reject(customError);
 
@@ -129,7 +140,7 @@ function initRequest(opts, params, middleware) {
 }
 
 function isObject(obj) {
-  return obj && _lodash2.default.isObject(obj) && !_lodash2.default.isFunction(obj);
+  return obj && (0, _lodash8.default)(obj) && !(0, _lodash6.default)(obj);
 }
 
 function isAbsUri(uri) {

@@ -1,5 +1,8 @@
 import url from 'url'
-import _ from 'lodash'
+import merge from 'lodash.merge'
+import cloneDeep from 'lodash.clonedeep'
+import isFunction from 'lodash.isfunction'
+import lodashIsObject from 'lodash.isobject'
 import debug from 'debug'
 import Promise from 'bluebird'
 import request from 'superagent'
@@ -35,9 +38,9 @@ function initRequest(opts, params, middleware) {
 
   if (rules) {
     if (rules.all)
-      options = _.merge(_.cloneDeep(rules.all), options)
+      options = merge(cloneDeep(rules.all), options)
     if (rules[opts.method])
-      options = _.merge(_.cloneDeep(rules[opts.method]), options)
+      options = merge(cloneDeep(rules[opts.method]), options)
 
     if (options.headers) {
       Object.keys(options.headers).forEach(k => {
@@ -79,7 +82,7 @@ function initRequest(opts, params, middleware) {
       let code = res.status;
       let body = res.body || res.text;
 
-      if (_.isFunction(middleware)) {
+      if (isFunction(middleware)) {
         return middleware(res, body, (customError, customBody) => {
           if (customError)
             return Reject(customError)
@@ -104,7 +107,7 @@ function initRequest(opts, params, middleware) {
 }
 
 function isObject(obj) {
-  return obj && _.isObject(obj) && !_.isFunction(obj)
+  return obj && lodashIsObject(obj) && !isFunction(obj)
 }
 
 function isAbsUri(uri) {

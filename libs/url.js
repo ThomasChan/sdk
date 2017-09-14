@@ -1,6 +1,7 @@
-import _ from 'lodash';
+import templateSettings from 'lodash.templatesettings'
+import template from 'lodash.template'
 
 export default (route, locals) => {
-  _.templateSettings.interpolate = /{{([\s\S]+?)}}/g; // cipher
-  return _.template(route)(locals)
+  templateSettings.interpolate = /{{([\s\S]+?)}}/g; // cipher
+  return template(route)(locals)
 }

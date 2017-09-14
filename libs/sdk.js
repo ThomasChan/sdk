@@ -7,7 +7,7 @@
 // @brief: a sdk factory, build sdks made easy
 // @author: [turingou](http://guoyu.me)
 
-import _ from 'lodash'
+import isObject from 'lodash.isobject'
 import { lowLevel, highLevel } from './factory'
 
 /**
@@ -19,19 +19,19 @@ import { lowLevel, highLevel } from './factory'
  **/
 export default class SDK {
   constructor(host, routes, rules = null) {
-    if (!routes || !host) 
+    if (!routes || !host)
       return
-    if (!_.isObject(routes)) 
+    if (!isObject(routes))
       return
 
     this.host = host
     this.routes = routes
     this.rules = rules
 
-    if (this.rules) 
+    if (this.rules)
       this.init()
   }
-  
+
   /**
    *
    * Add a new rule to SDK instance
@@ -41,9 +41,9 @@ export default class SDK {
    *
    **/
   rule(key, value) {
-    if (!key || !value) 
+    if (!key || !value)
       return false
-    if (!this.rules) 
+    if (!this.rules)
       this.rules = {}
 
     this.rules[key.toLowerCase()] = value
