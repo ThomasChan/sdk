@@ -61,6 +61,8 @@ function initRequest(opts, params, middleware) {
 
   return new Promise((Resolve, Reject) => {
     let req = request[options.method](options.url);
+    if (!window._xhr) window._xhr = [];
+    let indexInXhr = window._xhr.push(req);
 
     if (options.headers)
       req.set(options.headers)
@@ -72,6 +74,7 @@ function initRequest(opts, params, middleware) {
       req.send(options.body)
 
     req.end((err, res) => {
+      window._xhr.splice(indexInXhr, 1);
       if (err)
         return Reject(res)
 
