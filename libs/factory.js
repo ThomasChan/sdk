@@ -73,6 +73,11 @@ function initRequest(opts, params, middleware) {
     if (options.body)
       req.send(options.body)
 
+    req.cancel = function _superAgentCancel() {
+      window._xhr.splice(indexInXhr, 1);
+      req.abort();
+    };
+
     req.end((err, res) => {
       window._xhr.splice(indexInXhr, 1);
       if (err)
