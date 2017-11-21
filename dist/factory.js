@@ -100,13 +100,21 @@ function initRequest(opts, params, middleware) {
 
   return new _bluebird2.default(function (Resolve, Reject) {
     var req = _superagent2.default[options.method](options.url);
+    if (!window._xhr) window._xhr = [];
+    var indexInXhr = window._xhr.push(req);
 
     if (options.headers) req.set(options.headers);
     if (options.json) req.accept('json').type('json');
     if (options.qs) req.query(options.qs);
     if (options.body) req.send(options.body);
 
+    req.cancel = function _superAgentCancel() {
+      window._xhr.splice(indexInXhr, 1);
+      req.abort();
+    };
+
     req.end(function (err, res) {
+      window._xhr.splice(indexInXhr, 1);
       if (err) return Reject(res);
 
       (0, _debug2.default)('sdk:response:status')(res.status);
