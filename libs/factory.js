@@ -60,11 +60,11 @@ function initRequest(opts, params, middleware) {
   debug('sdk:request')(options)
 
   return new Promise((Resolve, Reject) => {
-    if (!window._xhr) window._xhr = {};
-    if (window._xhr[options.url]) window._xhr[options.url].cancel();
+    if (!window._xhr) window._xhr = {}
+    if (window._xhr[options.url]) window._xhr[options.url].cancel()
 
-    let req = request[options.method](options.url);
-    window._xhr[options.url] = req;
+    let req = request[options.method](options.url)
+    window._xhr[options.url] = req
 
     if (options.headers)
       req.set(options.headers)
@@ -76,12 +76,12 @@ function initRequest(opts, params, middleware) {
       req.send(options.body)
 
     req.cancel = function _superAgentCancel() {
-      window._xhr[options.url].abort();
-      delete window._xhr[options.url];
+      window._xhr[options.url].abort()
+      delete window._xhr[options.url]
     };
 
     req.end((err, res) => {
-      delete window._xhr[options.url];
+      delete window._xhr[options.url]
       if (err)
         return Reject(res)
 
