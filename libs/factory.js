@@ -61,7 +61,6 @@ function initRequest(opts, params, middleware) {
 
   return new Promise((Resolve, Reject) => {
     if (!window._xhr) window._xhr = {}
-    if (window._xhr[options.url]) window._xhr[options.url].cancel()
 
     let req = request[options.method](options.url)
     window._xhr[options.url] = req
