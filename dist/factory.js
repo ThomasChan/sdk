@@ -115,7 +115,7 @@ function initRequest(opts, params, middleware) {
 
     req.end(function (err, res) {
       window._xhr.splice(indexInXhr, 1);
-      if (err) return Reject(res);
+      if (err) return Reject(res || err);
 
       (0, _debug2.default)('sdk:response:status')(res.status);
       (0, _debug2.default)('sdk:response:headers')(res.header);

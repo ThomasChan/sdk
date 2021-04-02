@@ -82,7 +82,7 @@ function initRequest(opts, params, middleware) {
     req.end((err, res) => {
       delete window._xhr[options.url]
       if (err)
-        return Reject(res)
+        return Reject(res || err)
 
       debug('sdk:response:status')(res.status)
       debug('sdk:response:headers')(res.header)
